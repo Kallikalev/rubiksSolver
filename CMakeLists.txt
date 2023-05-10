@@ -3,4 +3,4 @@ project(rubiksSolver)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(rubiksSolver main.cpp)
+add_executable(rubiksSolver main.cpp move.cpp move.h)
