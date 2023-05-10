@@ -17,6 +17,27 @@ std::array<move,6> move::generators({
     move(std::array<int,48>({16,17,18,3,4,5,6,7,0,1,2,11,12,13,14,15,44,45,46,19,20,21,22,23,30,31,24,25,26,27,28,29,32,33,34,35,36,37,38,39,40,41,42,43,8,9,10,47}))
 });
 
+std::array<move,18> move::baseMoves({
+    move::generators[0],
+    move::generators[1],
+    move::generators[2],
+    move::generators[3],
+    move::generators[4],
+    move::generators[5],
+    move::composite(move::generators[0],move::generators[0]),
+    move::composite(move::generators[1],move::generators[1]),
+    move::composite(move::generators[2],move::generators[2]),
+    move::composite(move::generators[3],move::generators[3]),
+    move::composite(move::generators[4],move::generators[4]),
+    move::composite(move::generators[5],move::generators[5]),
+    move::composite(move::composite(move::generators[0],move::generators[0]),move::generators[0]),
+    move::composite(move::composite(move::generators[1],move::generators[1]),move::generators[1]),
+    move::composite(move::composite(move::generators[2],move::generators[2]),move::generators[2]),
+    move::composite(move::composite(move::generators[3],move::generators[3]),move::generators[3]),
+    move::composite(move::composite(move::generators[4],move::generators[4]),move::generators[4]),
+    move::composite(move::composite(move::generators[5],move::generators[5]),move::generators[5])
+});
+
 move::move() {
     map = identity.map;
 }

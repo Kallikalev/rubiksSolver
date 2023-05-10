@@ -2,7 +2,36 @@
 // Created by Kalev Martinson on 4/30/23.
 //
 #include <iostream>
+#include <stack>
 #include "move.h"
+
+move getBestMove(move& m, int depth) {
+    move bestMove = m;
+    int bestEval = m.evaluate();
+    std::stack<std::tuple<move,int,int>> stack;
+    stack.push(std::tuple<move,int,int>(m,depth,-1));
+    while (!stack.empty()) {
+        std::tuple<move,int,int> popped = stack.top();
+        stack.pop();
+        move poppedMove = std::get<0>(popped);
+        int poppedDepth = std::get<1>(popped);
+        int poppedLastMove = std::get<2>(popped);
+        int poppedEval = poppedMove.evaluate();
+        if (poppedEval > bestEval) {
+            bestMove = poppedMove;
+            bestEval = poppedEval;
+        }
+        if (poppedDepth != 0) {
+            for (int i = 0; i < move::baseMoves.size(); i++) {
+                if (i != -1 && poppedLastMove % 6 == i % 6) {
+                    continue;
+                }
+                stack.push(std::tuple<move,int,int>(move::composite(poppedMove,move::baseMoves[i]),poppedDepth-1,i));
+            }
+        }
+    }
+    return bestMove;
+}
 
 int main() {
     move scramble = move::identity;
@@ -29,39 +58,16 @@ int main() {
 
     std::cout << "Scramble:" << std::endl << scramble.to_string() << std::endl << "Evaluation: " << std::to_string(scramble.evaluate()) << std::endl;
 
-    int maxEval = scramble.evaluate();
-    move maxMove = scramble;
+    move bestMove = scramble;
+    for (int i = 0; i < 7; i++) {
+        bestMove = getBestMove(bestMove, 7);
 
-    for (int i = 0; i < 6; i++) {
-        move move1 = move::composite(scramble,move::generators[i]);
-        int move1Eval = move1.evaluate();
-        if (move1Eval > maxEval) {
-            maxEval = move1Eval;
-            maxMove = move1;
-        }
-        std::cout << "Move 1:" << std::endl << move1.to_string() << std::endl << "Evaluation: " << std::to_string(move1Eval) << std::endl;
-        for (int j = 0; j < 6; j++) {
-            move move2 = move::composite(move1,move::generators[j]);
-            int move2Eval = move2.evaluate();
-            if (move2Eval > maxEval) {
-                maxEval = move2Eval;
-                maxMove = move2;
-            }
-            std::cout << "Move 2:" << std::endl << move2.to_string() << std::endl << "Evaluation: " << std::to_string(move2Eval) << std::endl;
-            for (int k = 0; k < 6; k++) {
-                move move3 = move::composite(move2,move::generators[k]);
-                int move3Eval = move3.evaluate();
-                if (move3Eval > maxEval) {
-                    maxEval = move3Eval;
-                    maxMove = move3;
-                }
-                std::cout << "Move 3:" << std::endl << move3.to_string() << std::endl << "Evaluation: " << std::to_string(move3Eval) << std::endl;
-            }
-        }
+        std::cout << std::endl << std::endl;
+        std::cout << "Max move: " << bestMove.to_string() << std::endl << "Max eval: " << std::to_string(bestMove.evaluate()) << std::endl;
+
     }
 
-    std::cout << std::endl << std::endl;
-    std::cout << "Max move: " << maxMove.to_string() << std::endl << "Max eval: " << std::to_string(maxEval) << std::endl;
 
     return 0;
 }
+

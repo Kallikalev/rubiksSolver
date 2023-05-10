@@ -22,6 +22,7 @@ private:
 
 public:
     static std::array<move, 6> generators; // the generating moves are a subset of moves which all others can be built out of
+    static std::array<move, 18> baseMoves; // the base moves are the generators (clockwise turns), the generators twice (double turns), and their inverses (counterclockwise turns)
     static move identity; // the identity move is the "do nothing" move, aka the solved cube
 
     move();
